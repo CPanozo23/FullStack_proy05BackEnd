@@ -11,7 +11,6 @@ const UserSchema=new mongoose.Schema({
             },
         }
     },
-
     lastName:{
         type: String,
         required: true,
@@ -31,7 +30,7 @@ const UserSchema=new mongoose.Schema({
     },
     address:{
         type: String,
-        require: true,
+        required: true,
     },
     email:{
         type: String,

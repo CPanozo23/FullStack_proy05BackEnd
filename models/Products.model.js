@@ -25,11 +25,6 @@ const ProductSchema=new mongoose.Schema({
     category:{
         type: String,
         required: true,
-        validate: {
-            validator:function(v){
-                return /^[a-zA-Z0-9 ]{3,30}$/.test(v)
-            },
-        }
     },
     price:{
         type: Number,
@@ -42,11 +37,7 @@ const ProductSchema=new mongoose.Schema({
     imagen:{
         type: String,
         required: true,
-        validate: {
-            validator:function(v){
-                return /^[a-zA-Z0-9 ]{3,30}$/.test(v)
-            },
-        }
+        
     },
     quantity:{
         type: Number,
@@ -59,11 +50,6 @@ const ProductSchema=new mongoose.Schema({
     description:{
         type: String,
         required: true,
-        validate: {
-            validator:function(v){
-                return /^[a-zA-Z0-9 ]{3,500}$/.test(v)
-            },
-        }
     },
     
 },{

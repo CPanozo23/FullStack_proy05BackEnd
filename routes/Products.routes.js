@@ -6,15 +6,15 @@ const{ product_up, getProducts, updateProduct, deleteProduct, getProductById, de
 const auth = require('../middlewares/auth')
 
 router.get('/', getProducts)
-
-router.post('/create',auth,product_up) //Registro
+// le quité la autentificación por ahora
+router.post('/create',product_up) //Registro 
 
 router.put('/update',auth,updateProduct)
 
 router.delete('/delete',auth,deleteProduct)
 
 
-router.get('/:_id',auth,getProductById)
+router.get('/:_id',getProductById)
 
 router.delete('/:_id',auth,deleteProductById)
 

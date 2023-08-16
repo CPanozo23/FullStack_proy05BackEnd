@@ -16,18 +16,21 @@ const signup= async (req,res)=>{
     }
     const hashedPassword=hashPassword(password)
     try {
+        console.log(req.body)
         const user= new User({
             name,lastName, birthday, phone, address, 
             email:emailLowerCase,
             password:hashedPassword,
             type:2, sessions:0, purchases:0, products:0
         })
-        const resp=await user.save()
+        console.log("user creado ", user)
+        const resp=await user.save() //se cae
+        console.log("resp: ", resp)
         const token=generateToken(resp)
+        console.log(token)
         return res.status(201).json({
             message: 'User created',
-            token
-
+            token,
         })
     } catch (error) {
         return res.status(500).json({
@@ -103,6 +106,8 @@ const login=async(req,res)=>{
             return res.status(200).json({      
                 message: 'User logged in successfully',
                 userId:userValidated._id, 
+                name:userValidated.name,
+                lastName:userValidated.lastName,
                 typeUser:userValidated.type===1 ? "admin":"client",    
                 token      
             });
@@ -190,5 +195,6 @@ module.exports={
     deleteUser,
     login,
     getUserById,
-    deleteUserById
+    deleteUserById,
+    updateUserById
 }

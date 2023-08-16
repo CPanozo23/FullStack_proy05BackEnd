@@ -78,10 +78,10 @@ const getProductById=async(req,res)=>{
     const{_id}=req.params
     try {
         const product=await Product.findOne({_id})
-        if(user){
+        if(product){
             return res.status(200).json({
                 message:'ok',
-                detail:user
+                detail:product
             })
         }
         return res.status(404).json({
