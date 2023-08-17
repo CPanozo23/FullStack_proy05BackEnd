@@ -104,11 +104,7 @@ const login=async(req,res)=>{
             console.log(`coinciden`)
             const token=generateToken(userValidated)
             return res.status(200).json({      
-                message: 'User logged in successfully',
-                userId:userValidated._id, 
-                name:userValidated.name,
-                lastName:userValidated.lastName,
-                typeUser:userValidated.type===1 ? "admin":"client",    
+                message: 'User logged in successfully',  
                 token      
             });
         }else{

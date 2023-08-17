@@ -8,10 +8,12 @@ const app = express();
 require("dotenv").config();
 require('./models/User.model')
 require('./models/Products.model')
+require('./models/Availability.model')
 
 const cors=require('cors')
 const userRoutes=require('./routes/User.routes')
 const productsRoutes=require('./routes/Products.routes')
+const availabilityRoutes=require('./routes/Availability.routes')
 
 const mongoose = require("mongoose");
 
@@ -27,6 +29,7 @@ app.use(cors(corsOptions))
 app.use(express.json())
 app.use('/users',userRoutes)
 app.use('/products',productsRoutes)
+app.use('/availabilities',availabilityRoutes)
 
 // 7- Enviar datos en la petición utilizando Body y un middleware(se sabe que lo es porque utiliza el "use"), postman
 app.use(express.json())
