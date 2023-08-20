@@ -128,10 +128,25 @@ const updateConsultationById=async(req,res)=>{
     }   
 }
 
+//call from other controller
+const getConsultationByIdd=async(_id)=>{
+    //const{_id}=req.params
+    try {
+        const consultation=await Consultation.findOne({_id})
+        if(consultation){
+            return consultation
+        }
+        return
+    } catch (error) {
+        return
+    }   
+}
+
 module.exports={
     register,
     getConsultation,
     updateConsultation,
     getConsultationById,
     updateConsultationById,
+    getConsultationByIdd,
 }

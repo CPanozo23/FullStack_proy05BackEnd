@@ -130,32 +130,39 @@ const updatePatientById=async(req,res)=>{
     }   
 }
 
-
-
+//call from other controller
 const getPatientByIdd=async(_id)=>{
-    console.log(_id)
+    //console.log("En getPatientByIdd: ", _id)
     //const {_id}=req.params
     try {
         const patient=await Patient.findOne({_id})
         if(patient){
-            return patient
-            
-        }else{
-            console.log('Not found patient')
+            return patient     
         }
+        return 
+        
     } catch (error) {
-        return res.status(500).json({
-            message:'Server Error',
-            error
-        })
+        return 
     }   
 }
 
+const updatePatientt=async (patientUpdated)=>{
+    try {
+        const resp=await Patient.findByIdAndUpdate(patientUpdated._id,patientUpdated, {new:true})
+        if(resp){            
+            return resp
+        }
+        return 
+    } catch (error) {
+        return
+    }
+}
 module.exports={
     register,
     getPatients,
     updatePatient,
     getPatientById,
     updatePatientById,
-    getPatientByIdd
+    getPatientByIdd,
+    updatePatientt
 }

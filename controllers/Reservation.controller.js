@@ -1,7 +1,7 @@
 const mongoose=require('mongoose')
-const getPatientByIdd = require('./Patient.controller')
-const getHourById = require('./Hour.controller')
-const getConsultationById = require('./Consultation.controller')
+const {getPatientByIdd, updatePatientt} = require('./Patient.controller')
+const {getHourByIdd, updateHourByIdd} = require('./Hour.controller')
+const {getConsultationByIdd} = require('./Consultation.controller')
 //const generateToken = require('../helpers/generateToken')
 //const hashPassword = require('../helpers/hashPassword')
 
@@ -11,24 +11,43 @@ const register= async (req,res)=>{
     const {id_patient, id_hour,id_consultation}=req.body
     try {
         console.log(req.body)
-        console.log("Buscar patient")
+        //console.log("Buscar patient")
         const patient = await getPatientByIdd(id_patient)
-        console.log("imprimiendo paciente: ", patient)
-        const hour=await getHourById(id_hour)
-        const consultation=await getConsultationById(id_consultation)
-        if(patient && hour && consultation){
+        //console.log("imprimiendo paciente: ", typeof(patient))
+        //typeof(patient) !== "undefined" ? console.log("si ta"): console.log("no ta")
+        
+        const consultation=await getConsultationByIdd(id_consultation)
+        
+        if(typeof(patient) !== "undefined" && typeof(consultation) !== "undefined"){
+            //const hour=await getHourByIdd(id_hour)
             console.log("Datos a guardar:")
-            console.log(patient._id + " " + hour._id  + " " + consultation._id)
-            /*const reservation= new Reservation({
-                id_patient, id_hour,id_consultation
-            })
-            console.log("Reservation creado ", reservation)
-            const resp=await reservation.save()
-            console.log("resp: ", resp)
-            return res.status(201).json({
-                message: 'Reservation created',
-                reservation,
-            })*/
+            console.log(patient._id + " " + consultation.price)
+            const id_patient=patient._id
+            
+            const price=consultation.price
+            const hour=await updateHourByIdd(id_hour)
+            if(typeof(hour) !== "undefined"){
+                const id_hours = hour._id
+                const reservation= new Reservation({
+                    id_patient, id_hours,price
+                })
+                console.log("objeto reserva previo:", reservation)
+                const resp=await reservation.save()
+                console.log("objeto reserva después:", resp)
+                patient.sessions_id.push(resp._id)
+                console.log("paciente con session agregado: ", patient)
+                const patientUpdate = await updatePatientt(patient)
+                console.log("actualizado")
+                console.log(patientUpdate)
+                console.log(typeof(patientUpdate))
+                if(typeof(patientUpdate) === 'object'){
+                    console.log("es objeto")
+                    return res.status(201).json({
+                        message: 'Reservation created',
+                        reservation,
+                    })
+                }
+            }
         }
     } catch (error) {
         return res.status(500).json({

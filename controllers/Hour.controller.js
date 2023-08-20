@@ -147,6 +147,37 @@ const updateHourById=async(req,res)=>{
     }   
 }
 
+//call from other controller
+const getHourByIdd=async(_id)=>{
+    try {
+        const hour=await Hour.findOne({_id})
+        if(hour){
+            return hour
+            }
+        return        
+    } catch (error) {
+        return
+    }   
+}
+const updateHourByIdd=async(_id)=>{
+    console.log("updateHourByIdd: ", _id)
+    try {
+        const hour = await Hour.findByIdAndUpdate(
+            _id,
+            { $set: { state: false } },
+            { new: true }
+        )
+        if(hour){
+            console.log("cambio de estado de hour")            
+            return hour
+        }
+        console.log("no cambio de estado de hour") 
+        return
+    } catch (error) {
+        console.log("no no cambio de estado de hour") 
+        return
+    }   
+}
 module.exports={
     register,
     getHours,
@@ -155,4 +186,6 @@ module.exports={
     getHourById,
     deleteHourById,
     updateHourById,
+    getHourByIdd, //desde otro controller
+    updateHourByIdd, //desde otro controller
 }
