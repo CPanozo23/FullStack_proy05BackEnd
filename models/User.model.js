@@ -1,7 +1,10 @@
 const mongoose=require('mongoose')
 
 const UserSchema=new mongoose.Schema({
-    
+    run:{
+        type: String,
+        required: true,
+    },
     name:{
         type: String,
         required: true,
@@ -24,14 +27,6 @@ const UserSchema=new mongoose.Schema({
         type: Date,
         require: true,
     },
-    phone:{
-        type: Number,
-        require: true,
-    },
-    address:{
-        type: String,
-        required: true,
-    },
     email:{
         type: String,
         require: true,
@@ -49,27 +44,34 @@ const UserSchema=new mongoose.Schema({
     },
     type:{
         type: Number,
-        require: true,
+        required: true,
     },
-    sessions:{
-        type:Number,
-        require: true
+    patients: [
+        {
+        _id:{
+            type: String,
+            required: true,
+            validate: {
+                validator: function(v){
+                    return /^[a-zA-Z0-9 ]{3,12}$/.test(v)
+                },
+            }
+        },
+        relationship:{
+            type: String,
+            required: true,
+            validate: {
+                validator: function(v){
+                    return /^[a-zA-Z0-9 ]{3,30}$/.test(v)
+                },
+            },
+        },
     },
-    purchases:{
-        type: Number,
-        require: true,
-    },
-    products:{
-        type: Number,
-        require: true,
-    },
+]
     
-
 },{
     timestamps:true
 })
 
 const User=mongoose.model('User',UserSchema)
-
-
 module.exports=User

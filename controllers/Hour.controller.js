@@ -1,23 +1,27 @@
 const mongoose=require('mongoose')
-const generateToken = require('../helpers/generateToken')
-const hashPassword = require('../helpers/hashPassword')
+//const generateToken = require('../helpers/generateToken')
+//const hashPassword = require('../helpers/hashPassword')
 
-const Product=mongoose.model('Product')
+const Hour=mongoose.model('Hour')
 
-//CREAR PRODUCTO
-const product_up= async (req,res)=>{
-    const{name, author, category, description, price, discount, imagen, quantity}=req.body
-    
+//cambiar a que solo envíe horas disponibles state:true
+//después agregar otro para el admin ver las futuras horas y el historial
+const register= async (req,res)=>{
+    const {startTime,duration}=req.body
     try {
-        const product= new Product({
-            name, author, category, description, price, discount, imagen, quantity, sold:0
+        console.log(req.body)
+        const hour= new Hour({
+            startTime,duration,
+            state:true
         })
-        const resp=await product.save()
-        const token=generateToken(resp)
+        console.log("Hour creado ", hour)
+        const resp=await hour.save()
+        console.log("resp: ", resp)
+        //const token=generateToken(resp)
+        //console.log(token)
         return res.status(201).json({
-            message: 'Product created',
-            token
-
+            message: 'Hour created',
+            hour
         })
     } catch (error) {
         return res.status(500).json({
@@ -26,10 +30,9 @@ const product_up= async (req,res)=>{
         })
     }
 }
-
-const getProducts= async(req,res)=>{
+const getHours= async(req,res)=>{
     try {
-        const resp=await Product.find()
+        const resp=await Hour.find()
         return res.status(200).json({
             message:'OK',
             detail:resp,
@@ -41,27 +44,11 @@ const getProducts= async(req,res)=>{
          })
     }
 }
-const updateProduct=async (req,res)=>{
-    const{_id,productUpdated}=req.body
-    console.log(_id,productUpdated)
+const updateHour=async (req,res)=>{
+    const{_id,hourUpdated}=req.body
+    console.log(_id,hourUpdated)
     try {
-        const resp=await Product.findByIdAndUpdate(_id,productUpdated, {new:true})
-        return res.status(200).json({
-            messege:"ok",
-            detail:resp,
-        })
-    } catch (error) {
-        return res.status(500).json({
-            message:"Internal Server Error",
-            detail:error,
-        })
-    }
-}
-const deleteProduct=async (req,res)=>{
-    const{_id}=req.body
-    console.log(_id)
-    try {
-        const resp=await Product.findByIdAndDelete(_id)
+        const resp=await Hour.findByIdAndUpdate(_id,hourUpdated, {new:true})
         return res.status(200).json({
             messege:"ok",
             detail:resp,
@@ -74,14 +61,33 @@ const deleteProduct=async (req,res)=>{
     }
 }
 
-const getProductById=async(req,res)=>{
-    const{_id}=req.params
+//delete solo si está con estado true
+
+const deleteHour=async (req,res)=>{
+    const{_id}=req.body
+    console.log(_id)
     try {
-        const product=await Product.findOne({_id})
-        if(product){
+        const resp=await Hour.findByIdAndDelete(_id)
+        return res.status(200).json({
+            messege:"ok",
+            detail:resp,
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message:"Internal Server Error",
+            detail:error,
+        })
+    }
+}
+
+const getHourById=async(req,res)=>{
+    const _id=req.params
+    try {
+        const hour=await Hour.findOne({_id})
+        if(hour){
             return res.status(200).json({
                 message:'ok',
-                detail:product
+                detail:hour
             })
         }
         return res.status(404).json({
@@ -95,10 +101,10 @@ const getProductById=async(req,res)=>{
         })
     }   
 }
-const deleteProductById=async(req,res)=>{
+const deleteHourById=async(req,res)=>{
     const{_id}=req.params
     try {
-        const resp=await Product.findByIdAndDelete(_id)
+        const resp=await Hour.findByIdAndDelete(_id)
         if(resp){            
             return res.status(200).json({
             messege:"ok",
@@ -116,10 +122,13 @@ const deleteProductById=async(req,res)=>{
         })
     }   
 }
-const updateProductById=async(req,res)=>{
-    const{_id,productUpdated}=req.params
+const updateHourById=async(req,res)=>{
+    const{_id}=req.params
+    const{hourUpdated}=req.body
+    console.log(_id)
+    console.log(hourUpdated)
     try {
-        const resp=await Product.findByIdAndUpdate(_id,productUpdated, {new:true})
+        const resp=await Hour.findByIdAndUpdate(_id,hourUpdated, {new:true})
         if(resp){            
             return res.status(200).json({
             messege:"ok",
@@ -139,11 +148,11 @@ const updateProductById=async(req,res)=>{
 }
 
 module.exports={
-    product_up,
-    getProducts,
-    updateProduct,
-    deleteProduct,
-    getProductById,
-    deleteProductById,
-    updateProductById
+    register,
+    getHours,
+    updateHour,
+    deleteHour,
+    getHourById,
+    deleteHourById,
+    updateHourById,
 }

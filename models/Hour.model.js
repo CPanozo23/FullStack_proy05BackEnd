@@ -1,25 +1,22 @@
 const mongoose=require('mongoose')
 
-const AvailabilitySchema=new mongoose.Schema({
-    
-    date_start:{
+const HourSchema=new mongoose.Schema({
+    startTime: {
         type: Date,
         require: true,
+        unique:true
     },
-    date_end:{
-        type: Date,
+    duration:{
+        type: Number,
         require: true,
     },
     state:{
         type: Boolean,
         require: true,
     },
-
 },{
     timestamps:true
 })
 
-const Availability=mongoose.model('Availability',AvailabilitySchema)
-
-
-module.exports=Availability
+const Hour=mongoose.model('Hour',HourSchema)
+module.exports=Hour

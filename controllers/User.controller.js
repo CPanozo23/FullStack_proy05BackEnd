@@ -2,10 +2,11 @@ const mongoose=require('mongoose')
 const generateToken = require('../helpers/generateToken')
 const hashPassword = require('../helpers/hashPassword')
 
-const User=mongoose.model('User')
+//const User=mongoose.model('User')
+const User=require('../models/User.model')
 
 const signup= async (req,res)=>{
-    const{name,lastName, birthday, phone, address, email,password}=req.body
+    const{run, name,lastName, birthday, address, email, password}=req.body
     const emailLowerCase=email.toLowerCase()
     const regexPassword=/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/
 
@@ -18,13 +19,14 @@ const signup= async (req,res)=>{
     try {
         console.log(req.body)
         const user= new User({
-            name,lastName, birthday, phone, address, 
+            run, name,lastName, birthday, address, 
             email:emailLowerCase,
             password:hashedPassword,
-            type:2, sessions:0, purchases:0, products:0
+            type:2,
+            patients:[]
         })
         console.log("user creado ", user)
-        const resp=await user.save() //se cae
+        const resp=await user.save()
         console.log("resp: ", resp)
         const token=generateToken(resp)
         console.log(token)
@@ -70,6 +72,39 @@ const updateUser=async (req,res)=>{
         })
     }
 }
+
+const updateUserPatient = async (req, res) => {
+    const _id = req.params._id
+    const { patientId, relationship } = req.body
+
+    try {
+        const user = await User.findByIdAndUpdate(
+            _id,
+            { $push: { patients: {
+                _id:patientId,
+                relationship:relationship
+            } } },
+            { new: true }
+        )
+        
+        if(user){
+            return res.status(200).json({
+                message:'update user',
+                detail:user
+            })
+        }
+        return res.status(404).json({
+            message:'Not found'
+        })
+        
+    } catch (error) {
+        return res.status(500).json({
+            message:'Server Error',
+            error
+        })
+    } 
+}
+/*
 const deleteUser=async (req,res)=>{
     const{_id}=req.body
     console.log(_id)
@@ -86,6 +121,7 @@ const deleteUser=async (req,res)=>{
         })
     }
 }
+*/
 
 const login=async(req,res)=>{
     const{email,password}=req.body
@@ -141,6 +177,7 @@ const getUserById=async(req,res)=>{
         })
     }   
 }
+/*
 const deleteUserById=async(req,res)=>{
     const{_id}=req.params
     try {
@@ -161,7 +198,7 @@ const deleteUserById=async(req,res)=>{
             error
         })
     }   
-}
+}*/
 const updateUserById=async(req,res)=>{
     const{_id,userUpdated}=req.params
     try {
@@ -188,9 +225,10 @@ module.exports={
     signup,
     getUsers,
     updateUser,
-    deleteUser,
+    //deleteUser,
+    updateUserPatient,
     login,
     getUserById,
-    deleteUserById,
-    updateUserById
+    //deleteUserById,
+    //updateUserById
 }

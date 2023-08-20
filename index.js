@@ -7,17 +7,20 @@ const app = express();
 //PARA AVANZAR EN TAREA
 require("dotenv").config();
 require('./models/User.model')
-require('./models/Products.model')
-require('./models/Availability.model')
+require('./models/Patient.model')
+require('./models/Consultation.model')
+require('./models/Hour.model')
+require('./models/Reservation.model')
 
 const cors=require('cors')
 const userRoutes=require('./routes/User.routes')
-const productsRoutes=require('./routes/Products.routes')
-const availabilityRoutes=require('./routes/Availability.routes')
+const patientRoutes=require('./routes/Patient.routes')
+const consultationRoutes=require('./routes/Consultation.routes')
+const hourRoutes=require('./routes/Hour.routes')
+const reservationRoutes=require('./routes/Reservation.routes')
 
 const mongoose = require("mongoose");
-
-mongoose.connect(process.env.MONGO_URI + 'tienda');
+mongoose.connect(process.env.MONGO_URI);
 
 const port = process.env.PORT;
 
@@ -28,8 +31,10 @@ const corsOptions={
 app.use(cors(corsOptions))
 app.use(express.json())
 app.use('/users',userRoutes)
-app.use('/products',productsRoutes)
-app.use('/availabilities',availabilityRoutes)
+app.use('/patients',patientRoutes)
+app.use('/consultations',consultationRoutes)
+app.use('/hours',hourRoutes)
+app.use('/reservation',reservationRoutes)
 
 // 7- Enviar datos en la petición utilizando Body y un middleware(se sabe que lo es porque utiliza el "use"), postman
 app.use(express.json())
