@@ -1,33 +1,42 @@
 const mongoose=require('mongoose')
-//const generateToken = require('../helpers/generateToken')
-//const hashPassword = require('../helpers/hashPassword')
+const { updateUserPatient } = require('./User.controller')
 
 const Patient=mongoose.model('Patient')
 
 const register= async (req,res)=>{
-    const{run, name,lastName, birthday, address, email,phone}=req.body
+    const { _id } = req.params
+    const{relationship, run, name,lastName, birthday, email,phone, street, number_st, department, city, region}=req.body
     const emailLowerCase=email.toLowerCase()
     
     try {
-        console.log(req.body)
         const patient= new Patient({
-            run, name,lastName, birthday, address, 
+            run, name,lastName, birthday, 
+            address: {
+                name_street:street, number_street:number_st, department, city, region
+            }, 
             email:emailLowerCase,
             phone,
             sessions_id:[]
         })
-        console.log("Patient creado ", patient)
+
         const resp=await patient.save()
-        console.log("resp: ", resp)
-        //const token=generateToken(resp)
-        //console.log(token)
-        return res.status(201).json({
-            message: 'Patient created',
-            patient
-        })
-    } catch (error) {
+        const respUser = await updateUserPatient(_id, resp._id, relationship)
+        if (respUser){
+            return res.status(201).json({
+                message: 'Patient created',
+                patient
+            })
+        }else{
+            return res.status(500).json({
+                message: 'Server Error',
+                code:500,
+            detail: error,
+            })
+        }
+    }catch(error){
         return res.status(500).json({
-            message: 'Internal Server Error',
+            message: 'Server Error',
+            code:500,
             detail: error,
         })
     }
@@ -43,13 +52,13 @@ const getPatients= async(req,res)=>{
     } catch (error) {
          return res.status(500).json({
             message: 'Internal Server Error',
+            code:500,
             detail: error,
          })
     }
 }
 const updatePatient=async (req,res)=>{
     const{_id,patientUpdated}=req.body
-    console.log(_id,patientUpdated)
     try {
         const resp=await Patient.findByIdAndUpdate(_id,patientUpdated, {new:true})
         return res.status(200).json({
@@ -59,13 +68,13 @@ const updatePatient=async (req,res)=>{
     } catch (error) {
         return res.status(500).json({
             message:"Internal Server Error",
-            detail:error,
+            code:500,
+            detail: error,
         })
     }
 }
 
 const getPatientById=async(req,res)=>{
-    console.log(req)
     const {_id}=req.params
     try {
         const patient=await Patient.findOne({_id})
@@ -76,16 +85,22 @@ const getPatientById=async(req,res)=>{
             })
         }
         return res.status(404).json({
-            message:'Not found'
+            message:'Not found',
+            code:404,
+            detail: error,
         })
         
     } catch (error) {
         return res.status(500).json({
             message:'Server Error',
-            error
+            code:500,
+            detail: error,
         })
     }   
 }
+
+
+
 /*
 const deleteUserById=async(req,res)=>{
     const{_id}=req.params
@@ -119,21 +134,22 @@ const updatePatientById=async(req,res)=>{
         })
         }
         return res.status(404).json({
-            message:'Not found'
+            message:'Not found',
+            code:404,
+            detail: error,
         })
         
     } catch (error) {
         return res.status(500).json({
             message:'Server Error',
-            error
+            code:500,
+            detail: error,
         })
     }   
 }
 
 //call from other controller
 const getPatientByIdd=async(_id)=>{
-    //console.log("En getPatientByIdd: ", _id)
-    //const {_id}=req.params
     try {
         const patient=await Patient.findOne({_id})
         if(patient){
@@ -164,5 +180,6 @@ module.exports={
     getPatientById,
     updatePatientById,
     getPatientByIdd,
-    updatePatientt
+    updatePatientt,
+    
 }

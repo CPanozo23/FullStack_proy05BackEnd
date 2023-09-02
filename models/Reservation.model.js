@@ -5,8 +5,8 @@ const ReservationSchema=new mongoose.Schema({
         type: String,
         required: true,
     },
-    id_hours:{
-        type: String,
+    hour:{
+        type: Object,
         required: true,
     },
     price: {

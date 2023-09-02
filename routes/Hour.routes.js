@@ -2,14 +2,16 @@ const express=require('express')
 
 const router= express.Router()
 
-const{ register, getHours, updateHour, deleteHour, getHourById, deleteHourById, updateHourById}=require('../controllers/Hour.controller')
+const{ register, getHours, updateHour, deleteHour, getHourById, deleteHourById, updateHourById, getHoursTrue, updateHourByIddReq}=require('../controllers/Hour.controller')
 const auth = require('../middlewares/auth')
 
-router.post('/register',auth, register) //FALTA COMPROBAR
 router.get('/', getHours)
-router.put('/update',auth,updateHour) //FALTA COMPROBAR
+router.get('/available', getHoursTrue)
 router.get('/:_id',getHourById) 
+router.post('/register',auth, register)
+//router.put('/update',auth,updateHour)
+router.put('/update',auth,updateHourByIddReq)
 router.post('/:_id',auth,updateHourById) 
-router.delete('/:_id',auth,deleteHourById) //FALTA COMPROBAR
+router.delete('/:_id',auth,deleteHourById)
 
-module.exports=router;
+module.exports=router

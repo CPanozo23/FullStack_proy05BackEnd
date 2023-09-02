@@ -11,7 +11,7 @@ const HourSchema=new mongoose.Schema({
         require: true,
     },
     state:{
-        type: Boolean,
+        type: String,
         require: true,
     },
 },{

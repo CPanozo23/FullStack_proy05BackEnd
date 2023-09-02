@@ -4,23 +4,27 @@ const UserSchema=new mongoose.Schema({
     run:{
         type: String,
         required: true,
-    },
-    name:{
-        type: String,
-        required: true,
+        unique: true,
         validate: {
-            validator:function(v){
-                return /^[a-zA-Z0-9 ]{3,30}$/.test(v)
-            },
-        }
+          validator: (value) => /^[a-zA-Z0-9]{9}$/.test(value),
+        },
+    },
+    name: {
+      type: String,
+      required: true,
+      validate: {
+        validator: function (v) {
+          return /^[^\s]{3,30}$/.test(v)
+        },
+      },
     },
     lastName:{
         type: String,
         required: true,
         validate: {
-            validator:function(v){
-                return /^[a-zA-Z0-9 ]{3,30}$/.test(v)
-            },
+          validator: function (v) {
+            return /^[a-zA-Z0-9 ]{3,30}$/.test(v)
+          },
         }
     },
     birthday:{
@@ -46,29 +50,31 @@ const UserSchema=new mongoose.Schema({
         type: Number,
         required: true,
     },
-    patients: [
-        {
-        _id:{
-            type: String,
-            required: true,
-            validate: {
-                validator: function(v){
-                    return /^[a-zA-Z0-9 ]{3,12}$/.test(v)
+    patients: {
+        type: [
+          {
+            _id: {
+              type: String,
+              required: true,
+              validate: {
+                validator: function (v) {
+                  return /^[a-zA-Z0-9 ]{3,12}$/.test(v)
                 },
-            }
-        },
-        relationship:{
-            type: String,
-            required: true,
-            validate: {
-                validator: function(v){
-                    return /^[a-zA-Z0-9 ]{3,30}$/.test(v)
-                },
+              },
             },
-        },
-    },
-]
-    
+            relationship: {
+              type: String,
+              required: true,
+              validate: {
+                validator: function (v) {
+                  return /^[^\s]{3,30}$/.test(v)
+                },
+              },
+            },
+          },
+        ],
+        default: [], // Inicializar como un arreglo vacío
+      } 
 },{
     timestamps:true
 })

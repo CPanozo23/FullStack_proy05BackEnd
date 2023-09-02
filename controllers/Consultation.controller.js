@@ -1,22 +1,14 @@
 const mongoose=require('mongoose')
-//const generateToken = require('../helpers/generateToken')
-//const hashPassword = require('../helpers/hashPassword')
-
 const Consultation=mongoose.model('Consultation')
 
 const register= async (req,res)=>{
-    const{name,duration, price}=req.body
+    const{name,duration, price, description}=req.body
     try {
-        console.log(req.body)
         const consultation= new Consultation({
-            name,duration, price,
+            name,duration, price, description,
             state:true
         })
-        console.log("Consultation creado ", consultation)
         const resp=await consultation.save()
-        console.log("resp: ", resp)
-        //const token=generateToken(resp)
-        //console.log(token)
         return res.status(201).json({
             message: 'Consultation created',
             consultation
@@ -24,6 +16,7 @@ const register= async (req,res)=>{
     } catch (error) {
         return res.status(500).json({
             message: 'Internal Server Error',
+            code:500,
             detail: error,
         })
     }
@@ -39,14 +32,13 @@ const getConsultation= async(req,res)=>{
     } catch (error) {
          return res.status(500).json({
             message: 'Internal Server Error',
+            code:500,
             detail: error,
          })
     }
 }
 const updateConsultation=async (req,res)=>{
-    console.log(req)
     const {_id,consultationUpdated}=req.body
-    console.log(_id,consultationUpdated)
     try {
         const resp=await Consultation.findByIdAndUpdate(_id,consultationUpdated, {new:true})
         return res.status(200).json({
@@ -56,29 +48,11 @@ const updateConsultation=async (req,res)=>{
     } catch (error) {
         return res.status(500).json({
             message:"Internal Server Error",
-            detail:error,
+            code:500,
+            detail: error,
         })
     }
 }
-/*
-const deleteUser=async (req,res)=>{
-    const{_id}=req.body
-    console.log(_id)
-    try {
-        const resp=await User.findByIdAndDelete(_id)
-        return res.status(200).json({
-            messege:"ok",
-            detail:resp,
-        })
-    } catch (error) {
-        return res.status(500).json({
-            message:"Internal Server Error",
-            detail:error,
-        })
-    }
-}
-*/
-
 
 const getConsultationById=async(req,res)=>{
     const{_id}=req.params
@@ -91,23 +65,22 @@ const getConsultationById=async(req,res)=>{
             })
         }
         return res.status(404).json({
-            message:'Not found'
+            message:'Not found',
+            code:404,
+            detail: error,
         })
         
     } catch (error) {
         return res.status(500).json({
             message:'Server Error',
-            error
+            code:500,
+            detail: error,
         })
     }   
 }
 const updateConsultationById=async(req,res)=>{
-    console.log(req)
     const {_id}=req.params
     const {consultationUpdated}=req.body
-    console.log("datos")
-    console.log(_id)
-    console.log(consultationUpdated)
     try {
         const resp=await Consultation.findByIdAndUpdate(_id,consultationUpdated, {new:true})
         if(resp){            
@@ -117,28 +90,30 @@ const updateConsultationById=async(req,res)=>{
         })
         }
         return res.status(404).json({
-            message:'Not found'
+            message:'Not found',
+            code:404,
+            detail: error,
         })
         
     } catch (error) {
         return res.status(500).json({
             message:'Server Error',
-            error
+            code:500,
+            detail: error,
         })
     }   
 }
 
-//call from other controller
 const getConsultationByIdd=async(_id)=>{
-    //const{_id}=req.params
     try {
         const consultation=await Consultation.findOne({_id})
+        console.log("obj consulta encontrado: ", consultation)
         if(consultation){
             return consultation
         }
-        return
+        return null
     } catch (error) {
-        return
+        return error
     }   
 }
 

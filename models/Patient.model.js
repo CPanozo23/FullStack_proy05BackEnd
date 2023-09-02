@@ -1,7 +1,6 @@
 const mongoose=require('mongoose')
 
 const PatientSchema=new mongoose.Schema({
-    //validar como RUN
     run:{
         type: String,
         required: true,

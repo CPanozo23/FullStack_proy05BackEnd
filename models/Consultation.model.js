@@ -18,9 +18,18 @@ const ConsultationSchema=new mongoose.Schema({
         type: Number,
         require: true,
     },
-    state:{ //si está disponible o no para reservar true si
+    state:{ 
         type: Boolean,
         require: true,
+    },
+    description: {
+        type: String,
+        required: true,
+        validate: {
+            validator:function(v){
+                return /^[a-zA-Z0-9 ]{3,300}$/.test(v)
+            },
+        }
     },
 },{
     timestamps:true
