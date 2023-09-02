@@ -9,22 +9,34 @@ const register= async (req,res)=>{
     const {id_patient, id_hour,id_consultation}=req.body
     try {
         const patient = await getPatientByIdd(id_patient)
+        console.log("paso1")
         const consultation=await getConsultationByIdd(id_consultation)
+        console.log("paso2")
+        
         const hour=await updateHourByIdd(id_hour)
+        console.log("paso3")
+        
         if(typeof(patient) !== "undefined" && typeof(consultation) !== "undefined"){
             const id_patient=patient._id
             const price=consultation.price
+            console.log("paso4")
+
                 const reservation= new Reservation({
                     id_patient, hour,price
                 })
                 const resp=await reservation.save()
+            console.log("paso5")
+
                 patient.sessions_id.push(resp._id)
                 const patientUpdate = await updatePatientt(patient)
+            console.log("paso6")
+
                 if(typeof(patientUpdate) === 'object'){
                     return res.status(201).json({
                         message: 'Reservation created',
                         reservation,
                     })
+
                 }
         }
     } catch (error) {
