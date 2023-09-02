@@ -20,10 +20,14 @@ mongoose.connect(process.env.MONGO_URI);
 
 const port = process.env.PORT;
 
+const corsOptions = {
+    origin: 'https://carolinapanozo.netlify.app',
+  }
 
+  app.use(cors(corsOptions))
 
 //app.use(cors(corsOptions))
-app.use(cors())
+//app.use(cors())
 
 /* 
 
