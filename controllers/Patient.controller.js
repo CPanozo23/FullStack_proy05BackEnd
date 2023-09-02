@@ -18,8 +18,9 @@ const register= async (req,res)=>{
             phone,
             sessions_id:[]
         })
-
+        console.log(patient)
         const resp=await patient.save()
+        console.log("resp: ", resp)
         const respUser = await updateUserPatient(_id, resp._id, relationship)
         if (respUser){
             return res.status(201).json({
@@ -27,6 +28,7 @@ const register= async (req,res)=>{
                 patient
             })
         }else{
+            console.log(error)
             return res.status(500).json({
                 message: 'Server Error',
                 code:500,
