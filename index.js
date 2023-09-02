@@ -21,7 +21,7 @@ mongoose.connect(process.env.MONGO_URI);
 const port = process.env.PORT;
 
 const corsOptions={
-    origin:[process.env.FRONTEND_URL, process.env.FRONT_URL_DEV],
+    origin:[process.env.FRONTEND_URL],
     optionsSuccessStatus:200
 }
 app.use(cors(corsOptions))
